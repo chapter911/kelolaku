@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:kelolaku/page/mainpage.dart';
 
 class ShopRegister extends StatefulWidget {
   const ShopRegister({Key? key}) : super(key: key);
@@ -431,7 +433,11 @@ class _ShopRegisterState extends State<ShopRegister> {
                     ),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: controls.onStepContinue,
+                      onPressed: _currenStep != getStep().length - 1
+                          ? controls.onStepContinue
+                          : () {
+                              Get.offAll(const MainPage());
+                            },
                       child: Text(_currenStep != 2 ? "LANJUT" : "BUAT TOKO"),
                     ),
                   ),

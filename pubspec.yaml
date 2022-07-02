@@ -37,6 +37,7 @@ dependencies:
   dio: any
   # flutter_launcher_icons: any
   # flutter_launcher_name: any
+  flutter_share: any
   get: any
   google_fonts: 2.0.0
   im_stepper: any

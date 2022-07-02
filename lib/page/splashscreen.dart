@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kelolaku/model/data_sharedpreferences.dart';
-import 'package:kelolaku/page/loginpage.dart';
 import 'package:kelolaku/page/mainpage.dart';
+import 'package:kelolaku/page/loginpage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
