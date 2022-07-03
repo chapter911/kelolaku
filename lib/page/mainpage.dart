@@ -25,9 +25,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: _widgetOptions.elementAt(_selectedIndex),
-        ),
+        body: _widgetOptions.elementAt(_selectedIndex),
         bottomNavigationBar: BottomNavigationBar(
           items: const [
             BottomNavigationBarItem(

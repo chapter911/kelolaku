@@ -436,7 +436,7 @@ class _ShopRegisterState extends State<ShopRegister> {
                       onPressed: _currenStep != getStep().length - 1
                           ? controls.onStepContinue
                           : () {
-                              Get.offAll(const MainPage());
+                              Get.offAll(() => const MainPage());
                             },
                       child: Text(_currenStep != 2 ? "LANJUT" : "BUAT TOKO"),
                     ),

@@ -45,6 +45,7 @@ dependencies:
   pull_to_refresh: ^2.0.0
   rounded_loading_button: any
   shared_preferences: any
+  toggle_switch: any
 
 # flutter_icons:
 #   android: "launcher_icon"
