@@ -9,11 +9,11 @@ class DetailTransaksi extends StatefulWidget {
 }
 
 class _DetailTransaksiState extends State<DetailTransaksi> {
+  String status = 'Belum Dibayar';
   List<Widget> _produk = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getProduk();
   }
@@ -74,13 +74,73 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 100,
+        backgroundColor: Colors.white,
         title: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              Get.arguments[0],
-              style: const TextStyle(color: Colors.black),
+            Row(
+              children: [
+                Text(
+                  Get.arguments[0],
+                  style: const TextStyle(color: Colors.black),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: DropdownButton(
+                      value: status,
+                      items: <String>['Belum Dibayar', 'Lunas']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(color: Colors.teal),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: Container(
+                                padding: const EdgeInsets.all(5),
+                                color: Colors.teal,
+                                child: const Center(
+                                  child: Text(
+                                    "Ganti Status?",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                )),
+                            titlePadding: const EdgeInsets.all(0),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.red),
+                                child: const Text("Batal"),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    status = newValue!;
+                                  });
+                                  Get.back();
+                                },
+                                child: const Text("Ganti"),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      style: const TextStyle(color: Colors.teal),
+                    ),
+                  ),
+                )
+              ],
             ),
             const SizedBox(
               height: 20,
@@ -133,7 +193,6 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
             )
           ],
         ),
-        backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () {
