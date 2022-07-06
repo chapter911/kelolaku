@@ -63,29 +63,6 @@ class _ProdukPageState extends State<ProdukPage> {
                 ),
               ),
             ),
-            Expanded(
-                child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: const Text("Buat Kategori"),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: const Text("Perbarui Kategori"),
-                    ),
-                  ),
-                ],
-              ),
-            ))
           ],
         ),
       ),
