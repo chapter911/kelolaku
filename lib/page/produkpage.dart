@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:kelolaku/page/variasiproduk.dart';
 
 class ProdukPage extends StatefulWidget {
   const ProdukPage({Key? key}) : super(key: key);
@@ -21,7 +23,9 @@ class _ProdukPageState extends State<ProdukPage> {
       variasi1 = false,
       variasi2 = false,
       variasi3 = false,
-      variasi4 = false;
+      variasi4 = false,
+      stock = false,
+      sembunyikan = false;
 
   String kategori = '- PILIH -';
 
@@ -259,7 +263,9 @@ class _ProdukPageState extends State<ProdukPage> {
                         child: Align(
                           alignment: Alignment.bottomRight,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.to(() => const VariasiProduk());
+                            },
                             child: const Text("Ubah"),
                           ),
                         ),
@@ -352,6 +358,46 @@ class _ProdukPageState extends State<ProdukPage> {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      const Text("STOCK"),
+                      Switch(
+                        value: stock,
+                        onChanged: (value) {
+                          setState(() {
+                            stock = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      const Text("Sembunyikan Produk"),
+                      Switch(
+                        value: sembunyikan,
+                        onChanged: (value) {
+                          setState(() {
+                            sembunyikan = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             )
           ],
         ),

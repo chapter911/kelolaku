@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kelolaku/model/data_sharedpreferences.dart';
-import 'package:kelolaku/page/mainpage.dart';
 import 'package:kelolaku/page/loginpage.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,19 +15,24 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     DataSharedPreferences().checkData("username").then((value) {
-      if (value) {
-        Future.delayed(const Duration(seconds: 1)).then((value) {
-          Get.offAll(() => const MainPage(),
-              transition: Transition.downToUp,
-              duration: const Duration(seconds: 2));
-        });
-      } else {
-        Future.delayed(const Duration(seconds: 1)).then((value) {
-          Get.offAll(() => const LoginPage(),
-              transition: Transition.downToUp,
-              duration: const Duration(seconds: 2));
-        });
-      }
+      Future.delayed(const Duration(seconds: 1)).then((value) {
+        Get.offAll(() => const LoginPage(),
+            transition: Transition.downToUp,
+            duration: const Duration(seconds: 2));
+      });
+      // if (value) {
+      //   Future.delayed(const Duration(seconds: 1)).then((value) {
+      //     Get.offAll(() => const MainPage(),
+      //         transition: Transition.downToUp,
+      //         duration: const Duration(seconds: 2));
+      //   });
+      // } else {
+      //   Future.delayed(const Duration(seconds: 1)).then((value) {
+      //     Get.offAll(() => const LoginPage(),
+      //         transition: Transition.downToUp,
+      //         duration: const Duration(seconds: 2));
+      //   });
+      // }
     });
   }
 

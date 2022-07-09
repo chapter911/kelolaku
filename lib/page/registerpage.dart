@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kelolaku/api/apiuser.dart';
 import 'package:kelolaku/page/loginpage.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -12,7 +13,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _username = TextEditingController();
-  final TextEditingController _notelp = TextEditingController();
+  final TextEditingController _phone = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _konfirmasi = TextEditingController();
 
@@ -65,7 +66,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 height: 10,
               ),
               TextField(
-                controller: _notelp,
+                controller: _phone,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.phone_android),
                   labelText: "Nomor Telefon",
@@ -86,6 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               TextField(
                 controller: _password,
+                obscureText: true,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.vpn_key),
                   labelText: "Password",
@@ -106,6 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               TextField(
                 controller: _konfirmasi,
+                obscureText: true,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.vpn_key),
                   labelText: "Konfirmasi Password",
@@ -128,9 +131,28 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: _register,
                 width: double.maxFinite,
                 onPressed: () {
-                  setState(() {
-                    _register.reset();
-                  });
+                  if (_username.text.isEmpty ||
+                      _password.text.isEmpty ||
+                      _phone.text.isEmpty) {
+                    Get.snackbar("Maaf", "Harap Lengkapi Data Anda");
+                  } else if (_password.text != _konfirmasi.text) {
+                    Get.snackbar(
+                        "Maaf", "Password dan konfirmasi Password Tidak Sama");
+                  } else {
+                    APIUser.insertUser(context, {
+                      "username": _username.text,
+                      "password": _password.text,
+                      "phone": _phone.text
+                    }).then((value) {
+                      _register.reset();
+                      if (value.isNotEmpty) {
+                        Get.snackbar(value[0].status!, value[0].apimessage!);
+                        if (value[0].status! == "success") {
+                          Get.to(() => const LoginPage());
+                        }
+                      }
+                    });
+                  }
                 },
                 color: Colors.teal,
                 child: const Text("REGISTER"),

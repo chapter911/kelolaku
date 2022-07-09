@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kelolaku/api/apiuser.dart';
+import 'package:kelolaku/model/data_sharedpreferences.dart';
 import 'package:kelolaku/page/registerpage.dart';
 import 'package:kelolaku/page/shopregisterpage.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -87,12 +89,28 @@ class _LoginPageState extends State<LoginPage> {
                   controller: _login,
                   color: Colors.teal,
                   onPressed: () {
-                    setState(() {
-                      _login.reset();
-                      Get.to(() => const ShopRegister(),
-                          transition: Transition.rightToLeft,
-                          duration: const Duration(seconds: 1));
-                    });
+                    if (_username.text.isEmpty || _password.text.isEmpty) {
+                      Get.snackbar("Maaf", "Lengkapi Detail Login Anda",
+                          backgroundColor: Colors.red, colorText: Colors.white);
+                      setState(() {
+                        _login.reset();
+                      });
+                    } else {
+                      APIUser.login(context, _username.text, _password.text)
+                          .then((value) {
+                        _login.reset();
+                        if (value.isNotEmpty) {
+                          Get.snackbar(value[0].status!, value[0].apimessage!);
+                          if (value[0].status == "success") {
+                            DataSharedPreferences()
+                                .saveString("username", _username.text);
+                            Get.offAll(() => const ShopRegister(),
+                                transition: Transition.rightToLeft,
+                                duration: const Duration(seconds: 1));
+                          }
+                        }
+                      });
+                    }
                   },
                   child: const Icon(Icons.arrow_forward),
                 ),
