@@ -41,6 +41,7 @@ dependencies:
   get: any
   google_fonts: 2.0.0
   im_stepper: any
+  image_picker: any
   intl: any
   pull_to_refresh: ^2.0.0
   rounded_loading_button: any

@@ -1,6 +1,12 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:kelolaku/api/apishop.dart';
+import 'package:kelolaku/model/data_sharedpreferences.dart';
 import 'package:kelolaku/page/mainpage.dart';
 
 class ShopRegister extends StatefulWidget {
@@ -28,6 +34,21 @@ class _ShopRegisterState extends State<ShopRegister> {
       minggu = false;
 
   int _currenStep = 0;
+
+  String username = "";
+
+  var _image;
+  var imagePicker;
+  var type;
+
+  @override
+  void initState() {
+    super.initState();
+    imagePicker = ImagePicker();
+    DataSharedPreferences().readString("username").then((value) {
+      username = value!;
+    });
+  }
 
   List<Step> getStep() => [
         Step(
@@ -90,24 +111,47 @@ class _ShopRegisterState extends State<ShopRegister> {
           content: Column(
             children: [
               Center(
-                child: RawMaterialButton(
-                  onPressed: () {},
-                  shape: const CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: Colors.teal,
-                  padding: const EdgeInsets.all(15.0),
-                  child: const Icon(
-                    Icons.camera_alt,
-                    size: 80,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        XFile image = await imagePicker.pickImage(
+                            source: ImageSource.gallery,
+                            imageQuality: 50,
+                            preferredCameraDevice: CameraDevice.front);
+                        setState(() {
+                          _image = File(image.path);
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(20),
+                        primary: Colors.teal,
+                        onPrimary: Colors.red,
+                      ),
+                      child: _image != null
+                          ? Image.file(
+                              _image,
+                              width: 200.0,
+                              height: 200.0,
+                              fit: BoxFit.fitHeight,
+                            )
+                          : const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 50,
+                            ))),
               const SizedBox(
                 height: 20,
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  XFile image = await imagePicker.pickImage(
+                      source: ImageSource.gallery,
+                      imageQuality: 50,
+                      preferredCameraDevice: CameraDevice.front);
+                  setState(() {
+                    _image = File(image.path);
+                  });
+                },
                 child: const Text("Pilih Gambar untuk Toko"),
               ),
               const SizedBox(
@@ -436,7 +480,7 @@ class _ShopRegisterState extends State<ShopRegister> {
                       onPressed: _currenStep != getStep().length - 1
                           ? controls.onStepContinue
                           : () {
-                              Get.offAll(() => const MainPage());
+                              registerShop();
                             },
                       child: Text(_currenStep != 2 ? "LANJUT" : "BUAT TOKO"),
                     ),
@@ -449,4 +493,49 @@ class _ShopRegisterState extends State<ShopRegister> {
       ),
     );
   }
+
+  void registerShop() async {
+    if (_namatoko.text.isEmpty ||
+        _nomorkontak.text.isEmpty ||
+        _alamat.text.isEmpty ||
+        _deskripsi.text.isEmpty ||
+        _jambuka.text.isEmpty ||
+        _jamtutup.text.isEmpty ||
+        _informasi.text.isEmpty) {
+      Get.snackbar("Maaf", "Harap Lengkapi Data Anda");
+    } else {
+      File file = _image;
+      String fileName = file.path.split('/').last;
+      dio.FormData formData = dio.FormData.fromMap({
+        "foto": await dio.MultipartFile.fromFile(file.path, filename: fileName),
+        "nama": _namatoko.text,
+        "phone": _nomorkontak.text,
+        "alamat": _alamat.text,
+        "deskripsi": _deskripsi.text,
+        "senin": senin ? "1" : "0",
+        "selasa": selasa ? "1" : "0",
+        "rabu": rabu ? "1" : "0",
+        "kamis": kamis ? "1" : "0",
+        "jumat": jumat ? "1" : "0",
+        "sabtu": sabtu ? "1" : "0",
+        "minggu": minggu ? "1" : "0",
+        "jambuka": _jambuka.text,
+        "jamtutup": _jamtutup.text,
+        "informasitambahan": _informasi.text,
+        "username": username,
+      });
+
+      APIShop.insertShop(context, formData).then((value) {
+        if (value.isNotEmpty) {
+          Get.snackbar("Informasi", value[0].apimessage!);
+          if (value[0].status == "success") {
+            Get.offAll(() => const MainPage());
+          }
+        }
+      });
+    }
+  }
 }
+
+typedef OnPickImageCallback = void Function(
+    double? maxWidth, double? maxHeight, int? quality);
